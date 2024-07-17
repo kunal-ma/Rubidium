@@ -10,7 +10,6 @@ jobs:
         rust: [stable] # [stable, beta]
 
     runs-on: ${{ matrix.os }}
-
     steps:
       - uses: actions/checkout@v1
       - uses: actions-rs/toolchain@v1
@@ -35,3 +34,22 @@ jobs:
         with:
           command: tauri
           args: build
+      - name: "Collect Artifacts"
+        run: |
+          mv src-tauri/target/release/taurapp ./taurapp_win64
+          mv src-tauri/target/release/bundle/msi/*.msi ./taurapp_win64.msi
+          mv src-tauri/target/release/bundle/deb/*-setup.exe ./taurapp_win64.exe
+      - name: "Upload Build"
+        uses: actions/upload-artifact@v2
+        with:
+          name: taurapp_win64
+          path: taurapp_win64
+          retention-days: 1
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: |
+            taurapp_win64
+            taurapp_win64.msi
+            taurapp_win64.exe
