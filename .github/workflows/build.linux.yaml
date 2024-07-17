@@ -41,8 +41,10 @@ jobs:
       - name: "Upload Build"
         uses: actions/upload-artifact@v2
         with:
-          name: taurapp_win64
-          path: taurapp_win64
+          name: artifacts
+          path: |
+            taurapp_win64.msi
+            taurapp_win64.exe
           retention-days: 1
       - name: Release
         uses: softprops/action-gh-release@v1
